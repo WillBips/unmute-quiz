@@ -44,7 +44,7 @@ const BASE_COPY = {
     q5_c: "A magic 'Undo' button for when my brain goes blank.",
     q5_d: "A perfectly calm zone where I set the speed limit.",
     email_hook:
-      "Where should Mr Bluu send your Friction Profile (and your custom unblocking plan)?",
+      "Where should Mr Blue send your Friction Profile (and your custom unblocking plan)?",
     email_placeholder: "Enter your email address...",
     btn_submit: "Reveal My Profile",
     btn_founders: "Get Founder's Pass",
@@ -282,20 +282,8 @@ const BASE_COPY = {
 
 const EXTRA_COPY = {
   profile_title: "Your Friction Profile",
-  profile_perfectionist: "Perfectionist",
-  profile_translator: "Translator",
-  profile_blank_slater: "Blank Slater",
-  profile_sensory_overwhelmed: "Sensory Overwhelmed",
   btn_back: "Go Back",
-  result_image_alt: "Founder and Mr Bluu",
-  plan_perfectionist:
-    "Fast, low-pressure speaking reps with zero grammar interruption.",
-  plan_translator:
-    "Micro-prompts that force direct English thinking without translation loops.",
-  plan_blank_slater:
-    "Safety-first drills with recovery scripts for freeze moments.",
-  plan_sensory_overwhelmed:
-    "Calm-mode conversations with controllable pace and sensory load.",
+  result_image_alt: "Founder and Mr Blue",
 } as const;
 
 type Locale = keyof typeof BASE_COPY;
@@ -325,25 +313,171 @@ const PROFILE_BY_OPTION: Record<OptionKey, ProfileKey> = {
   d: "sensoryOverwhelmed",
 };
 
-const PROFILE_COPY_KEYS: Record<
+const PROFILE_DEFINITIONS: Record<
   ProfileKey,
-  { title: DictionaryKey; plan: DictionaryKey }
+  {
+    profileName: string;
+    description: string;
+    coreFriction: string;
+    emotionalTrigger: string;
+    bestUnmuteFeatures: string;
+  }
 > = {
   perfectionist: {
-    title: "profile_perfectionist",
-    plan: "plan_perfectionist",
+    profileName: "The Perfectionist",
+    description:
+      "You know the rules, but the fear of breaking them keeps you silent.",
+    coreFriction:
+      "You filter everything through a harsh internal grammar-checker before speaking.",
+    emotionalTrigger:
+      "Making a mistake in front of a native speaker and feeling judged or foolish.",
+    bestUnmuteFeatures:
+      "Undo Buffer (to erase mistakes instantly) and Mission Cards (for structured, predictable practice).",
   },
   translator: {
-    title: "profile_translator",
-    plan: "plan_translator",
+    profileName: "The Mental Translator",
+    description:
+      "You have the vocabulary, but it's trapped behind a translation delay.",
+    coreFriction:
+      "You construct the sentence in your native language first, causing you to lag 5 seconds behind the conversation.",
+    emotionalTrigger:
+      "Fast-paced group settings where the topic changes before you finish translating your thought.",
+    bestUnmuteFeatures:
+      "Turtle Mode (slows the AI down to match your translation speed) and Mission Cards (short bursts of targeted practice).",
   },
   blankSlater: {
-    title: "profile_blank_slater",
-    plan: "plan_blank_slater",
+    profileName: "The Blank Slater",
+    description:
+      "You study hard, but pressure causes a complete system reboot.",
+    coreFriction:
+      "The moment a native speaker looks at you, your working memory wipes completely clean.",
+    emotionalTrigger:
+      "Being caught off guard or asked an unexpected question.",
+    bestUnmuteFeatures:
+      "Undo Buffer (removes the high stakes) and Focus Picker (eliminates choice paralysis so you can just hit 'start').",
   },
   sensoryOverwhelmed: {
-    title: "profile_sensory_overwhelmed",
-    plan: "plan_sensory_overwhelmed",
+    profileName: "The Sensory Overwhelmed",
+    description:
+      "Your brain works perfectly until the environment gets too loud.",
+    coreFriction:
+      "You cannot process a second language when there are visual distractions, background noises, or overlapping voices.",
+    emotionalTrigger:
+      "Chaotic UI, noisy environments, or rapid-fire questions.",
+    bestUnmuteFeatures:
+      "Focus Mode (strips the UI to bare text/audio) and Turtle Mode (controls the auditory pacing).",
+  },
+};
+
+const PROFILE_RESULT_COPY: Record<
+  ProfileKey,
+  {
+    headline: string;
+    description: string;
+    unblockingPlan: string[];
+    cta: string;
+  }
+> = {
+  perfectionist: {
+    headline: "You're The Perfectionist.",
+    description:
+      "Here is what is happening: your brain cares so much about getting it right that it decides staying quiet is safer than making a mistake. You aren't lacking English skills; you are just lacking a safe place to fail.",
+    unblockingPlan: [
+      "The Undo Buffer: Speak freely. If you make a mistake, hit Undo. The AI forgets it ever happened.",
+      "Mission Cards: Practice specific, low-stakes scenarios (like ordering coffee) so you always know what to say next.",
+      "No Red Pen: Mr Blue doesn't correct you unless you ask him to.",
+    ],
+    cta: "Start Your Safe Practice (Get Founder's Pass)",
+  },
+  translator: {
+    headline: "You're The Mental Translator.",
+    description:
+      "Here is what is happening: you have a massive English vocabulary, but you are forcing it through a translation tollbooth. You aren't bad at listening; your brain is just exhausted from doing double the work.",
+    unblockingPlan: [
+      "Turtle Mode: Slow Mr Blue down. Give your brain the extra seconds it needs to process without panic.",
+      "Focus Picker: Pick one specific daily mission to build direct English-to-English reflexes.",
+      "Scenario Reps: Repeat the same conversation until the translation step naturally fades away.",
+    ],
+    cta: "Build Your English Reflexes (Get Founder's Pass)",
+  },
+  blankSlater: {
+    headline: "You're The Blank Slater.",
+    description:
+      "Here is what is happening: the pressure of a live conversation is triggering your fight-or-flight response, which temporarily shuts down your language center. You didn't forget your English; it's just temporarily locked.",
+    unblockingPlan: [
+      "The Undo Buffer: Lower the stakes to absolute zero. If you freeze, take a breath, hit Undo, and try again.",
+      "Focus Picker: Stop worrying about \"what\" to study. Pick one card, and let the AI guide you.",
+      "Turtle Mode: Take the speed pressure off completely.",
+    ],
+    cta: "Unfreeze Your English (Get Founder's Pass)",
+  },
+  sensoryOverwhelmed: {
+    headline: "You're The Sensory Overwhelmed.",
+    description:
+      "Here is what is happening: processing a second language requires heavy cognitive load. When you add a busy interface, background noise, or speed to that, your brain simply protects itself by shutting down.",
+    unblockingPlan: [
+      "Focus Mode: Strip away the entire app interface. Just you, the text, and a calm voice. No distractions.",
+      "Turtle Mode: Control the speed of the audio input so it never feels overwhelming.",
+      "Bite-Sized Missions: 3-minute, highly controlled scenarios you can do in perfect quiet.",
+    ],
+    cta: "Enter the Calm Zone (Get Founder's Pass)",
+  },
+};
+
+const PROFILE_EMAIL_TEMPLATES: Record<
+  ProfileKey,
+  {
+    subject: string;
+    body: string;
+  }
+> = {
+  perfectionist: {
+    subject: "Your Friction Profile is inside 🦍",
+    body: `Hey [Name],
+Will here - and Mr Blue says hi.
+So you're a Perfectionist. Yeah... I taught English for 12 years across 60+ nationalities, and I've met hundreds of you. You're the one silently rehearsing a sentence while the conversation moves on without you. Every word gets run through this invisible grammar police in your head before it's allowed out.
+Here's the thing - your English is fine. It's the fear of the red pen that's wrecking you.
+That's why I built the Undo Buffer into Unmute. You mess up a verb tense? Hit a button. The AI forgets it happened. Gone. No judgment, no record, no cringing later.
+Here's a 30-second video of me and Mr Blue showing you how it works: [Link to Video]
+When you're ready to speak without the mental editor, grab your Founder's Pass here.
+Talk soon,
+Will & Mr Blue`,
+  },
+  translator: {
+    subject: "Your Friction Profile is inside 🦍",
+    body: `Hey [Name],
+Will here - Mr Blue's waving at you right now.
+So you're a Mental Translator. Exhausting, right? You know the words - that's not the issue. But everything goes through this loop: hear English -> translate to [your language] -> think of response -> translate back to English -> speak. By the time you open your mouth, the moment's gone.
+You don't need more vocabulary. You need reps at YOUR speed so your brain stops translating and starts just... talking.
+That's Turtle Mode. It slows the AI down so your brain gets breathing room. You build real-time reflexes without the panic of keeping up.
+Here's 30 seconds of me and Mr Blue breaking it down: [Link to Video]
+When you're ready to stop translating and start speaking, your Founder's Pass is here.
+Talk soon,
+Will & Mr Blue`,
+  },
+  blankSlater: {
+    subject: "Your Friction Profile is inside 🦍",
+    body: `Hey [Name],
+Will here - Mr Blue's got your back on this one.
+So you're a Blank Slater. Someone asks you a question in English, the pressure spikes, and suddenly every word you've ever learned just... vanishes. Total static. Like your brain hit the emergency shutdown button.
+That's not a learning problem. That's a stress response. Your English is in there - it just hides when the stakes feel high.
+So we killed the stakes. Unmute has an Undo Buffer - when your mind goes blank, you hit undo, take a breath, try again. No one knows. No one cares. The AI doesn't judge you, and honestly, neither does Mr Blue.
+Here's 30 seconds of us explaining it: [Link to Video]
+When you're ready to unfreeze, your Founder's Pass is here.
+Talk soon,
+Will & Mr Blue`,
+  },
+  sensoryOverwhelmed: {
+    subject: "Your Friction Profile is inside 🦍",
+    body: `Hey [Name],
+Will here - Mr Blue wanted me to keep this one short and calm. So I will.
+You're Sensory Overwhelmed. Speaking a second language already takes a LOT of mental bandwidth. Now add a cluttered app, fast audio, notifications, bright colors - and your brain just goes "nope" and shuts the whole thing down. Totally normal.
+Unmute was built to be quiet. Focus Mode strips out all the visual noise. Turtle Mode slows everything down. It's just you, the AI, and a conversation at whatever pace your brain needs.
+No chaos. No overwhelm. Just practice.
+Here's 30 seconds of me and Mr Blue in the calm zone: [Link to Video]
+When you're ready to step in, your Founder's Pass is here.
+Talk soon,
+Will & Mr Blue`,
   },
 };
 
@@ -372,9 +506,10 @@ function resolveWinningProfile(answers: OptionKey[]): ProfileKey {
 
   if (tied.length === 1) return tied[0];
 
-  for (let i = answers.length - 1; i >= 0; i -= 1) {
-    const profile = PROFILE_BY_OPTION[answers[i]];
-    if (tied.includes(profile)) return profile;
+  const finalAnswer = answers[4] ?? answers[answers.length - 1];
+  const tieBreakerProfile = finalAnswer ? PROFILE_BY_OPTION[finalAnswer] : null;
+  if (tieBreakerProfile && tied.includes(tieBreakerProfile)) {
+    return tieBreakerProfile;
   }
 
   return tied[0];
@@ -404,6 +539,7 @@ export default function Page() {
   const currentQuestion = questions[questionIndex];
   const progress =
     phase === "quiz" ? ((questionIndex + 1) / questions.length) * 100 : 100;
+  const winningResult = winningProfile ? PROFILE_RESULT_COPY[winningProfile] : null;
 
   const handleSelectAnswer = (choice: OptionKey) => {
     setAnswers((prev) => {
@@ -443,6 +579,9 @@ export default function Page() {
       answers,
       scores: scoreAnswers(answers),
       profile,
+      profileDefinition: PROFILE_DEFINITIONS[profile],
+      profileResultCopy: PROFILE_RESULT_COPY[profile],
+      profileEmailTemplate: PROFILE_EMAIL_TEMPLATES[profile],
       submittedAt: new Date().toISOString(),
     };
 
@@ -616,18 +755,29 @@ export default function Page() {
                 </div>
 
                 <h2 className="text-2xl font-black leading-tight sm:text-3xl md:text-4xl">
-                  {t(PROFILE_COPY_KEYS[winningProfile].title)}
+                  {winningResult?.headline}
                 </h2>
 
                 <p className="mx-auto max-w-xl text-sm leading-relaxed text-slate-600 sm:text-base">
-                  {t(PROFILE_COPY_KEYS[winningProfile].plan)}
+                  {winningResult?.description}
                 </p>
+
+                <div className="mx-auto w-full max-w-xl rounded-2xl border border-[var(--line)] bg-[var(--soft-blue)] p-4 text-left sm:p-5">
+                  <p className="text-xs font-bold uppercase tracking-[0.12em] text-[var(--unmute-blue)] sm:text-sm">
+                    Your Unblocking Plan:
+                  </p>
+                  <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-slate-700 sm:text-base">
+                    {winningResult?.unblockingPlan.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ol>
+                </div>
 
                 <a
                   href="https://unmute.today"
                   className="inline-flex min-h-12 w-full items-center justify-center rounded-2xl bg-[var(--unmute-blue)] px-7 py-3 text-base font-extrabold text-white shadow-[0_10px_20px_-12px_rgba(46,99,233,0.8)] transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--mr-blue)]/35 sm:w-auto"
                 >
-                  {t("btn_founders")}
+                  {winningResult?.cta}
                 </a>
               </article>
             )}
