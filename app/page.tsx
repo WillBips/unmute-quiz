@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { CSSProperties, FormEvent, useState } from "react";
 
 type OptionKey = "a" | "b" | "c" | "d";
@@ -286,6 +287,7 @@ const EXTRA_COPY = {
   profile_blank_slater: "Blank Slater",
   profile_sensory_overwhelmed: "Sensory Overwhelmed",
   btn_back: "Go Back",
+  result_image_alt: "Founder and Mr Bluu",
   plan_perfectionist:
     "Fast, low-pressure speaking reps with zero grammar interruption.",
   plan_translator:
@@ -599,6 +601,19 @@ export default function Page() {
                 <p className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--unmute-blue)]">
                   {t("profile_title")}
                 </p>
+
+                <div className="mx-auto w-full max-w-xl overflow-hidden rounded-3xl border border-[var(--line)] bg-slate-100 shadow-[0_12px_30px_-18px_rgba(0,0,0,0.35)]">
+                  <div className="relative aspect-[4/5] sm:aspect-[16/10]">
+                    <Image
+                      src="/mr-bluu-founder.jpg"
+                      alt={t("result_image_alt")}
+                      fill
+                      priority
+                      sizes="(max-width: 640px) 100vw, 640px"
+                      className="object-cover object-[50%_30%] scale-[1.06]"
+                    />
+                  </div>
+                </div>
 
                 <h2 className="text-2xl font-black leading-tight sm:text-3xl md:text-4xl">
                   {t(PROFILE_COPY_KEYS[winningProfile].title)}
