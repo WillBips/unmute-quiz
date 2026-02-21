@@ -285,6 +285,7 @@ const EXTRA_COPY = {
   profile_translator: "Translator",
   profile_blank_slater: "Blank Slater",
   profile_sensory_overwhelmed: "Sensory Overwhelmed",
+  btn_back: "Go Back",
   plan_perfectionist:
     "Fast, low-pressure speaking reps with zero grammar interruption.",
   plan_translator:
@@ -417,6 +418,18 @@ export default function Page() {
     setTimeout(() => setQuestionIndex((prev) => prev + 1), 120);
   };
 
+  const handleGoBack = () => {
+    if (phase === "quiz" && questionIndex > 0) {
+      setQuestionIndex((prev) => Math.max(prev - 1, 0));
+      return;
+    }
+
+    if (phase === "email") {
+      setPhase("quiz");
+      setQuestionIndex(questions.length - 1);
+    }
+  };
+
   const handleSubmitEmail = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (answers.length !== questions.length) return;
@@ -461,10 +474,10 @@ export default function Page() {
   return (
     <section
       style={themeVars}
-      className="relative min-h-screen bg-[var(--page-bg)] px-4 py-8 font-sans text-[var(--ink)]"
+      className="relative min-h-screen bg-[var(--page-bg)] px-3 py-4 font-sans text-[var(--ink)] sm:px-4 sm:py-8"
     >
-      <div className="mx-auto max-w-3xl">
-        <div className="mb-6 flex justify-end">
+      <div className="mx-auto w-full max-w-3xl">
+        <div className="mb-4 flex justify-end sm:mb-6">
           <label htmlFor="language" className="sr-only">
             Language
           </label>
@@ -482,7 +495,7 @@ export default function Page() {
           </select>
         </div>
 
-        <div className="overflow-hidden rounded-3xl border border-[var(--line)] bg-white shadow-[0_12px_36px_-20px_rgba(46,99,233,0.35)]">
+        <div className="overflow-hidden rounded-2xl border border-[var(--line)] bg-white shadow-[0_12px_36px_-20px_rgba(46,99,233,0.35)] sm:rounded-3xl">
           <div className="h-2 w-full bg-slate-100">
             <div
               className="h-full bg-[var(--unmute-blue)] transition-all duration-300"
@@ -490,14 +503,25 @@ export default function Page() {
             />
           </div>
 
-          <div className="p-6 md:p-8">
+          <div className="p-4 sm:p-6 md:p-8">
             {phase === "quiz" && (
               <article key={`${locale}-${questionIndex}`} className="space-y-5">
-                <p className="text-sm font-semibold text-slate-500">
-                  {`Q${questionIndex + 1} / ${questions.length}`}
-                </p>
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-xs font-semibold text-slate-500 sm:text-sm">
+                    {`Q${questionIndex + 1} / ${questions.length}`}
+                  </p>
+                  {questionIndex > 0 && (
+                    <button
+                      type="button"
+                      onClick={handleGoBack}
+                      className="inline-flex min-h-10 items-center justify-center rounded-xl border border-[var(--line)] bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--mr-blue)]/35 sm:text-sm"
+                    >
+                      {t("btn_back")}
+                    </button>
+                  )}
+                </div>
 
-                <h2 className="text-2xl font-extrabold leading-tight md:text-3xl">
+                <h2 className="text-xl font-extrabold leading-tight sm:text-2xl md:text-3xl">
                   {currentQuestion.title}
                 </h2>
 
@@ -511,12 +535,12 @@ export default function Page() {
                       key={choice}
                       type="button"
                       onClick={() => handleSelectAnswer(choice)}
-                      className="group flex w-full items-start gap-3 rounded-2xl border border-[var(--line)] bg-white px-4 py-3 text-left transition hover:border-[var(--mr-blue)] hover:bg-[var(--soft-blue)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--mr-blue)]/35"
+                      className="group flex min-h-12 w-full items-start gap-3 rounded-2xl border border-[var(--line)] bg-white px-3 py-3 text-left transition hover:border-[var(--mr-blue)] hover:bg-[var(--soft-blue)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--mr-blue)]/35 sm:px-4"
                     >
                       <span className="mt-0.5 inline-flex h-6 min-w-6 items-center justify-center rounded-md bg-slate-700 px-1.5 text-xs font-bold uppercase text-white group-hover:bg-[var(--unmute-blue)]">
                         {choice}
                       </span>
-                      <span className="text-base leading-relaxed text-slate-800">
+                      <span className="text-sm leading-relaxed text-slate-800 sm:text-base">
                         {currentQuestion.options[choice]}
                       </span>
                     </button>
@@ -527,7 +551,20 @@ export default function Page() {
 
             {phase === "email" && (
               <article className="space-y-5">
-                <h2 className="text-2xl font-extrabold leading-tight md:text-3xl">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-xs font-semibold text-slate-500 sm:text-sm">
+                    {`Q${questions.length} / ${questions.length}`}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleGoBack}
+                    className="inline-flex min-h-10 items-center justify-center rounded-xl border border-[var(--line)] bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--mr-blue)]/35 sm:text-sm"
+                  >
+                    {t("btn_back")}
+                  </button>
+                </div>
+
+                <h2 className="text-xl font-extrabold leading-tight sm:text-2xl md:text-3xl">
                   {t("email_hook")}
                 </h2>
 
@@ -545,7 +582,7 @@ export default function Page() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="inline-flex min-h-12 min-w-44 items-center justify-center rounded-2xl bg-[var(--unmute-blue)] px-6 py-3 text-base font-extrabold text-white shadow-[0_10px_20px_-12px_rgba(46,99,233,0.8)] transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--mr-blue)]/35"
+                    className="inline-flex min-h-12 w-full items-center justify-center rounded-2xl bg-[var(--unmute-blue)] px-6 py-3 text-base font-extrabold text-white shadow-[0_10px_20px_-12px_rgba(46,99,233,0.8)] transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--mr-blue)]/35 sm:min-w-44 sm:w-auto"
                   >
                     {isSubmitting ? (
                       <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/50 border-t-white" />
@@ -563,17 +600,17 @@ export default function Page() {
                   {t("profile_title")}
                 </p>
 
-                <h2 className="text-3xl font-black leading-tight md:text-4xl">
+                <h2 className="text-2xl font-black leading-tight sm:text-3xl md:text-4xl">
                   {t(PROFILE_COPY_KEYS[winningProfile].title)}
                 </h2>
 
-                <p className="mx-auto max-w-xl text-base leading-relaxed text-slate-600">
+                <p className="mx-auto max-w-xl text-sm leading-relaxed text-slate-600 sm:text-base">
                   {t(PROFILE_COPY_KEYS[winningProfile].plan)}
                 </p>
 
                 <a
                   href="https://unmute.today"
-                  className="inline-flex min-h-12 items-center justify-center rounded-2xl bg-[var(--unmute-blue)] px-7 py-3 text-base font-extrabold text-white shadow-[0_10px_20px_-12px_rgba(46,99,233,0.8)] transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--mr-blue)]/35"
+                  className="inline-flex min-h-12 w-full items-center justify-center rounded-2xl bg-[var(--unmute-blue)] px-7 py-3 text-base font-extrabold text-white shadow-[0_10px_20px_-12px_rgba(46,99,233,0.8)] transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--mr-blue)]/35 sm:w-auto"
                 >
                   {t("btn_founders")}
                 </a>
