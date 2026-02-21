@@ -43,7 +43,7 @@ const BASE_COPY = {
     q5_c: "A magic 'Undo' button for when my brain goes blank.",
     q5_d: "A perfectly calm zone where I set the speed limit.",
     email_hook:
-      "Where should Mr Blue send your Friction Profile (and your custom unblocking plan)?",
+      "Where should Mr Bluu send your Friction Profile (and your custom unblocking plan)?",
     email_placeholder: "Enter your email address...",
     btn_submit: "Reveal My Profile",
     btn_founders: "Get Founder's Pass",
@@ -89,7 +89,7 @@ const BASE_COPY = {
       "Un bouton magique 'Annuler' pour les moments où j'ai un trou noir.",
     q5_d: "Une zone parfaitement calme où je choisis la vitesse.",
     email_hook:
-      "Où est-ce que Mr Blue doit envoyer ton Profil de Blocage (et ton plan d'action personnalisé) ?",
+      "Où est-ce que Mr Bluu doit envoyer ton Profil de Blocage (et ton plan d'action personnalisé) ?",
     email_placeholder: "Ton adresse e-mail...",
     btn_submit: "Découvrir Mon Profil",
     btn_founders: "Obtenir le Founder's Pass",
@@ -131,7 +131,7 @@ const BASE_COPY = {
     q5_c: "Un botón mágico de 'Deshacer' para cuando me quedo en blanco.",
     q5_d: "Una zona perfectamente tranquila donde yo marco la velocidad.",
     email_hook:
-      "¿A dónde debería enviar Mr Blue tu Perfil de Fricción (y tu plan de desbloqueo personalizado)?",
+      "¿A dónde debería enviar Mr Bluu tu Perfil de Fricción (y tu plan de desbloqueo personalizado)?",
     email_placeholder: "Tu correo electrónico...",
     btn_submit: "Revelar Mi Perfil",
     btn_founders: "Conseguir Founder's Pass",
@@ -175,7 +175,7 @@ const BASE_COPY = {
     q5_c: "Um botão mágico de 'Desfazer' para quando me der um branco.",
     q5_d: "Uma zona perfeitamente calma onde eu defino a velocidade.",
     email_hook:
-      "Para onde o Mr Blue deve enviar o seu Perfil de Fricção (e seu plano de desbloqueio)?",
+      "Para onde o Mr Bluu deve enviar o seu Perfil de Fricção (e seu plano de desbloqueio)?",
     email_placeholder: "Seu e-mail...",
     btn_submit: "Revelar Meu Perfil",
     btn_founders: "Garantir Founder's Pass",
