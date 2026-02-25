@@ -284,6 +284,12 @@ const EXTRA_COPY = {
   profile_title: "Your Friction Profile",
   btn_back: "Go Back",
   result_image_alt: "Founder and Mr Blue",
+  teaser_result_label: "Teaser Result",
+  teaser_result_heading: "We've identified your primary speaking friction.",
+  teaser_unlock_hook:
+    "Enter your email to unlock your full Friction Profile Report and Founder's Pass offer.",
+  teaser_unlock_note:
+    "We'll send your Friction Profile + custom unblocking plan. No spam. Unsubscribe anytime.",
 } as const;
 
 type Locale = keyof typeof BASE_COPY;
@@ -540,15 +546,17 @@ export default function Page() {
   const progress =
     phase === "quiz" ? ((questionIndex + 1) / questions.length) * 100 : 100;
   const winningResult = winningProfile ? PROFILE_RESULT_COPY[winningProfile] : null;
+  const winningDefinition = winningProfile
+    ? PROFILE_DEFINITIONS[winningProfile]
+    : null;
 
   const handleSelectAnswer = (choice: OptionKey) => {
-    setAnswers((prev) => {
-      const next = [...prev];
-      next[questionIndex] = choice;
-      return next;
-    });
+    const nextAnswers = [...answers];
+    nextAnswers[questionIndex] = choice;
+    setAnswers(nextAnswers);
 
     if (questionIndex === questions.length - 1) {
+      setWinningProfile(resolveWinningProfile(nextAnswers));
       setTimeout(() => setPhase("email"), 120);
       return;
     }
@@ -572,7 +580,7 @@ export default function Page() {
     event.preventDefault();
     if (answers.length !== questions.length) return;
 
-    const profile = resolveWinningProfile(answers);
+    const profile = winningProfile ?? resolveWinningProfile(answers);
     const payload = {
       email: email.trim(),
       locale,
@@ -705,9 +713,28 @@ export default function Page() {
                   </button>
                 </div>
 
-                <h2 className="text-xl font-extrabold leading-tight sm:text-2xl md:text-3xl">
-                  {t("email_hook")}
-                </h2>
+                {winningDefinition && (
+                  <div className="rounded-2xl border border-[var(--line)] bg-[var(--soft-blue)] p-4 text-left sm:p-5">
+                    <p className="text-xs font-bold uppercase tracking-[0.12em] text-[var(--unmute-blue)] sm:text-sm">
+                      {t("teaser_result_label")}
+                    </p>
+                    <h2 className="mt-2 text-xl font-black leading-tight text-slate-900 sm:text-2xl">
+                      {winningDefinition.profileName}
+                    </h2>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-700 sm:text-base">
+                      {t("teaser_result_heading")} {winningDefinition.description}
+                    </p>
+                  </div>
+                )}
+
+                <div className="space-y-2">
+                  <h3 className="text-lg font-extrabold leading-tight sm:text-xl md:text-2xl">
+                    {t("teaser_unlock_hook")}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-slate-600">
+                    {t("teaser_unlock_note")}
+                  </p>
+                </div>
 
                 <form className="space-y-4" onSubmit={handleSubmitEmail}>
                   <input
