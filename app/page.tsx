@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { CSSProperties, FormEvent, useState } from "react";
+import { CSSProperties, FormEvent, useEffect, useRef, useState } from "react";
 
 type OptionKey = "a" | "b" | "c" | "d";
 type ProfileKey =
@@ -11,6 +11,9 @@ type ProfileKey =
   | "sensoryOverwhelmed";
 
 const DUMMY_WEBHOOK_URL = "https://formspree.io/f/mgolnvzd";
+const FOUNDERS_PASS_URL = "https://unmute.app";
+const FOUNDER_WELCOME_VIDEO_URL = "https://unmute.app/founder-welcome-video";
+const QUIZ_FLOW_VERSION = "friction-quiz-teaser-v1";
 
 const BASE_COPY = {
   en: {
@@ -444,10 +447,10 @@ Will here - and Mr Blue says hi.
 So you're a Perfectionist. Yeah... I taught English for 12 years across 60+ nationalities, and I've met hundreds of you. You're the one silently rehearsing a sentence while the conversation moves on without you. Every word gets run through this invisible grammar police in your head before it's allowed out.
 Here's the thing - your English is fine. It's the fear of the red pen that's wrecking you.
 That's why I built the Undo Buffer into Unmute. You mess up a verb tense? Hit a button. The AI forgets it happened. Gone. No judgment, no record, no cringing later.
-Here's a 30-second video of me and Mr Blue showing you how it works: [Link to Video]
-When you're ready to speak without the mental editor, grab your Founder's Pass here.
+Here's a 30-second video of me and Mr Bluu showing you how it works: ${FOUNDER_WELCOME_VIDEO_URL}
+When you're ready to speak without the mental editor, grab your Founder's Pass here: ${FOUNDERS_PASS_URL}
 Talk soon,
-Will & Mr Blue`,
+Will & Mr Bluu`,
   },
   translator: {
     subject: "Your Friction Profile is inside 🦍",
@@ -456,10 +459,10 @@ Will here - Mr Blue's waving at you right now.
 So you're a Mental Translator. Exhausting, right? You know the words - that's not the issue. But everything goes through this loop: hear English -> translate to [your language] -> think of response -> translate back to English -> speak. By the time you open your mouth, the moment's gone.
 You don't need more vocabulary. You need reps at YOUR speed so your brain stops translating and starts just... talking.
 That's Turtle Mode. It slows the AI down so your brain gets breathing room. You build real-time reflexes without the panic of keeping up.
-Here's 30 seconds of me and Mr Blue breaking it down: [Link to Video]
-When you're ready to stop translating and start speaking, your Founder's Pass is here.
+Here's 30 seconds of me and Mr Bluu breaking it down: ${FOUNDER_WELCOME_VIDEO_URL}
+When you're ready to stop translating and start speaking, your Founder's Pass is here: ${FOUNDERS_PASS_URL}
 Talk soon,
-Will & Mr Blue`,
+Will & Mr Bluu`,
   },
   blankSlater: {
     subject: "Your Friction Profile is inside 🦍",
@@ -467,24 +470,33 @@ Will & Mr Blue`,
 Will here - Mr Blue's got your back on this one.
 So you're a Blank Slater. Someone asks you a question in English, the pressure spikes, and suddenly every word you've ever learned just... vanishes. Total static. Like your brain hit the emergency shutdown button.
 That's not a learning problem. That's a stress response. Your English is in there - it just hides when the stakes feel high.
-So we killed the stakes. Unmute has an Undo Buffer - when your mind goes blank, you hit undo, take a breath, try again. No one knows. No one cares. The AI doesn't judge you, and honestly, neither does Mr Blue.
-Here's 30 seconds of us explaining it: [Link to Video]
-When you're ready to unfreeze, your Founder's Pass is here.
+So we killed the stakes. Unmute has an Undo Buffer - when your mind goes blank, you hit undo, take a breath, try again. No one knows. No one cares. The AI doesn't judge you, and honestly, neither does Mr Bluu.
+Here's 30 seconds of us explaining it: ${FOUNDER_WELCOME_VIDEO_URL}
+When you're ready to unfreeze, your Founder's Pass is here: ${FOUNDERS_PASS_URL}
 Talk soon,
-Will & Mr Blue`,
+Will & Mr Bluu`,
   },
   sensoryOverwhelmed: {
     subject: "Your Friction Profile is inside 🦍",
     body: `Hey [Name],
-Will here - Mr Blue wanted me to keep this one short and calm. So I will.
+Will here - Mr Bluu wanted me to keep this one short and calm. So I will.
 You're Sensory Overwhelmed. Speaking a second language already takes a LOT of mental bandwidth. Now add a cluttered app, fast audio, notifications, bright colors - and your brain just goes "nope" and shuts the whole thing down. Totally normal.
 Unmute was built to be quiet. Focus Mode strips out all the visual noise. Turtle Mode slows everything down. It's just you, the AI, and a conversation at whatever pace your brain needs.
 No chaos. No overwhelm. Just practice.
-Here's 30 seconds of me and Mr Blue in the calm zone: [Link to Video]
-When you're ready to step in, your Founder's Pass is here.
+Here's 30 seconds of me and Mr Bluu in the calm zone: ${FOUNDER_WELCOME_VIDEO_URL}
+When you're ready to step in, your Founder's Pass is here: ${FOUNDERS_PASS_URL}
 Talk soon,
-Will & Mr Blue`,
+Will & Mr Bluu`,
   },
+};
+
+type QuizTrackedEvent = {
+  name: string;
+  timestamp: string;
+  phase: "quiz" | "email" | "result";
+  locale: Locale;
+  questionIndex: number;
+  properties?: Record<string, unknown>;
 };
 
 function scoreAnswers(answers: OptionKey[]) {
@@ -529,6 +541,8 @@ export default function Page() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [phase, setPhase] = useState<"quiz" | "email" | "result">("quiz");
   const [winningProfile, setWinningProfile] = useState<ProfileKey | null>(null);
+  const trackedEventsRef = useRef<QuizTrackedEvent[]>([]);
+  const didTrackStartRef = useRef(false);
 
   const t = (key: DictionaryKey) => COPY[locale][key] ?? COPY.en[key];
 
@@ -550,13 +564,93 @@ export default function Page() {
     ? PROFILE_DEFINITIONS[winningProfile]
     : null;
 
+  const trackEvent = (
+    name: string,
+    properties?: Record<string, unknown>,
+    overrides?: Partial<Pick<QuizTrackedEvent, "phase" | "questionIndex" | "locale">>,
+  ) => {
+    const event: QuizTrackedEvent = {
+      name,
+      timestamp: new Date().toISOString(),
+      phase: overrides?.phase ?? phase,
+      locale: overrides?.locale ?? locale,
+      questionIndex: overrides?.questionIndex ?? questionIndex,
+      properties,
+    };
+
+    trackedEventsRef.current = [...trackedEventsRef.current.slice(-99), event];
+
+    if (typeof window !== "undefined") {
+      const w = window as typeof window & {
+        dataLayer?: Array<Record<string, unknown>>;
+        gtag?: (...args: unknown[]) => void;
+        plausible?: (eventName: string, options?: { props?: Record<string, unknown> }) => void;
+      };
+
+      w.dataLayer?.push({
+        event: `quiz_${name}`,
+        ...properties,
+        phase: event.phase,
+        locale: event.locale,
+        questionIndex: event.questionIndex,
+      });
+
+      if (typeof w.gtag === "function") {
+        w.gtag("event", `quiz_${name}`, {
+          ...properties,
+          phase: event.phase,
+          locale: event.locale,
+          questionIndex: event.questionIndex,
+        });
+      }
+
+      if (typeof w.plausible === "function") {
+        w.plausible(`quiz_${name}`, {
+          props: {
+            ...properties,
+            phase: event.phase,
+            locale: event.locale,
+            questionIndex: event.questionIndex,
+          },
+        });
+      }
+
+      if (process.env.NODE_ENV !== "production") {
+        console.info("[quiz-track]", event);
+      }
+    }
+
+    return event;
+  };
+
+  useEffect(() => {
+    if (didTrackStartRef.current) return;
+    didTrackStartRef.current = true;
+    trackEvent("quiz_started", { flowVersion: QUIZ_FLOW_VERSION }, { phase: "quiz", questionIndex: 0 });
+  }, []);
+
   const handleSelectAnswer = (choice: OptionKey) => {
     const nextAnswers = [...answers];
     nextAnswers[questionIndex] = choice;
     setAnswers(nextAnswers);
+    trackEvent("question_answered", {
+      questionNumber: questionIndex + 1,
+      answer: choice.toUpperCase(),
+      answersSnapshot: nextAnswers.join("").toUpperCase(),
+    });
 
     if (questionIndex === questions.length - 1) {
-      setWinningProfile(resolveWinningProfile(nextAnswers));
+      const profile = resolveWinningProfile(nextAnswers);
+      setWinningProfile(profile);
+      trackEvent("q5_completed", {
+        answersSnapshot: nextAnswers.join("").toUpperCase(),
+        profile,
+      });
+      trackEvent(
+        "teaser_result_shown",
+        { profile, profileName: PROFILE_DEFINITIONS[profile].profileName },
+        { phase: "email", questionIndex },
+      );
       setTimeout(() => setPhase("email"), 120);
       return;
     }
@@ -565,6 +659,11 @@ export default function Page() {
   };
 
   const handleGoBack = () => {
+    trackEvent("go_back_clicked", {
+      fromPhase: phase,
+      fromQuestionNumber: questionIndex + 1,
+    });
+
     if (phase === "quiz" && questionIndex > 0) {
       setQuestionIndex((prev) => Math.max(prev - 1, 0));
       return;
@@ -581,12 +680,56 @@ export default function Page() {
     if (answers.length !== questions.length) return;
 
     const profile = winningProfile ?? resolveWinningProfile(answers);
+    const scores = scoreAnswers(answers);
+    const topScore = Math.max(...Object.values(scores));
+    const emailTrimmed = email.trim();
+    const emailDomain = emailTrimmed.split("@")[1]?.toLowerCase() ?? null;
+    const crmTags = [
+      "quiz_lead",
+      "friction_profile_quiz",
+      `locale_${locale}`,
+      `profile_${profile}`,
+      `flow_${QUIZ_FLOW_VERSION}`,
+    ];
+
+    trackEvent("email_submit_clicked", {
+      profile,
+      emailDomain,
+      answersSnapshot: answers.join("").toUpperCase(),
+    });
+
     const payload = {
-      email: email.trim(),
+      email: emailTrimmed,
       locale,
       answers,
-      scores: scoreAnswers(answers),
+      scores,
       profile,
+      crmTags,
+      crmCustomFields: {
+        profileTag: profile,
+        profileName: PROFILE_DEFINITIONS[profile].profileName,
+        locale,
+        answersCompact: answers.join("").toUpperCase(),
+        topScore,
+        foundersPassUrl: FOUNDERS_PASS_URL,
+        founderWelcomeVideoUrl: FOUNDER_WELCOME_VIDEO_URL,
+      },
+      eventTracking: {
+        flowVersion: QUIZ_FLOW_VERSION,
+        submittedFromPhase: phase,
+        trackedEvents: trackedEventsRef.current,
+      },
+      emailAutomation: {
+        enabled: true,
+        workflow: "friction_profile_founder_welcome",
+        founderWelcomeVideoUrl: FOUNDER_WELCOME_VIDEO_URL,
+        destinationUrl: FOUNDERS_PASS_URL,
+        steps: [
+          "Send friction profile result email",
+          "Include founder welcome video (Will + Mr Bluu)",
+          "Link to unmute.app / Founder's Pass",
+        ],
+      },
       profileDefinition: PROFILE_DEFINITIONS[profile],
       profileResultCopy: PROFILE_RESULT_COPY[profile],
       profileEmailTemplate: PROFILE_EMAIL_TEMPLATES[profile],
@@ -595,7 +738,7 @@ export default function Page() {
 
     setIsSubmitting(true);
 
-    await Promise.allSettled([
+    const [webhookResult] = await Promise.allSettled([
       fetch(DUMMY_WEBHOOK_URL, {
         method: "POST",
         mode: "no-cors",
@@ -605,9 +748,18 @@ export default function Page() {
       new Promise((resolve) => setTimeout(resolve, 900)),
     ]);
 
+    trackEvent("email_webhook_attempted", {
+      profile,
+      webhookStatus: webhookResult.status,
+    });
+
     setWinningProfile(profile);
     setPhase("result");
     setIsSubmitting(false);
+    trackEvent("result_shown", {
+      profile,
+      profileName: PROFILE_DEFINITIONS[profile].profileName,
+    }, { phase: "result" });
   };
 
   const themeVars: CSSProperties = {
@@ -633,7 +785,11 @@ export default function Page() {
           <select
             id="language"
             value={locale}
-            onChange={(e) => setLocale(e.target.value as Locale)}
+            onChange={(e) => {
+              const nextLocale = e.target.value as Locale;
+              trackEvent("language_changed", { from: locale, to: nextLocale });
+              setLocale(nextLocale);
+            }}
             className="rounded-xl border border-[var(--line)] bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm outline-none transition focus-visible:ring-4 focus-visible:ring-[var(--mr-blue)]/35"
           >
             {(Object.keys(LOCALE_LABELS) as Locale[]).map((lang) => (
@@ -801,7 +957,13 @@ export default function Page() {
                 </div>
 
                 <a
-                  href="https://unmute.today"
+                  href={FOUNDERS_PASS_URL}
+                  onClick={() =>
+                    trackEvent("founders_pass_clicked", {
+                      profile: winningProfile,
+                      destinationUrl: FOUNDERS_PASS_URL,
+                    })
+                  }
                   className="inline-flex min-h-12 w-full items-center justify-center rounded-2xl bg-[var(--unmute-blue)] px-7 py-3 text-base font-extrabold text-white shadow-[0_10px_20px_-12px_rgba(46,99,233,0.8)] transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--mr-blue)]/35 sm:w-auto"
                 >
                   {winningResult?.cta}
