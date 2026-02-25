@@ -1,0 +1,394 @@
+{
+  "schemaVersion": "1.1",
+  "updatedAt": "2026-02-24T07:59:53.815Z",
+  "items": [
+    {
+      "id": "d56ccb59-7682-47c3-9e3f-11c7bf0365a5",
+      "targetId": "mylanguageexchange:boni",
+      "createdAt": "2026-02-24T07:59:53.815Z",
+      "source": "manual_import",
+      "actionType": "DM",
+      "targetScore": 9,
+      "confidence": "high",
+      "platform": "MyLanguageExchange",
+      "handleOrName": "Boni",
+      "quickContext": "Spanish teacher, C1 level, explicitly mentions wanting to improve spoken English before a life move to the US. High stakes situation.",
+      "postTopic": "Teacher in Spain, C1 English, plans to work in the US — wants to improve spoken English",
+      "personaMatch": [],
+      "personalizationHook": "Teacher who knows his grammar cold but needs to sound natural when he's in front of a US class or in a staff meeting — that's the real challenge",
+      "spamRiskNotes": "",
+      "drafts": {
+        "dm": {
+          "screenshot_index": 3,
+          "channel": "MyLanguageExchange",
+          "message": "Hey Boni — teacher planning to work in the US, C1 English — that's a big move. The grammar's there, but sounding natural in a US staffroom is a different thing entirely. I've been there. I'm a teacher too, happy to practice with you.",
+          "personalization_hook_used": "Teacher moving to the US — professional speaking stakes",
+          "first_touch_rule_check": "pass",
+          "spam_risk_check": "pass",
+          "if_revise_why": ""
+        },
+        "comment": null,
+        "followups": [
+          {
+            "screenshot_index": 3,
+            "stage": "positive_reply",
+            "message": "Great — if you ever want something more structured to practice between our chats, I built a tool for exactly this. It's called Unmute. Happy to share more if you're curious.",
+            "when_to_send": "After they reply positively and you've had at least one real conversation",
+            "condition": "Only after genuine rapport is established. Do not mention in first or second message."
+          }
+        ]
+      },
+      "status": "pending"
+    },
+    {
+      "id": "0974e0fa-3917-4650-a50f-bd846dd6fac7",
+      "targetId": "mylanguageexchange:luc-a",
+      "createdAt": "2026-02-24T07:59:53.815Z",
+      "source": "manual_import",
+      "actionType": "DM",
+      "targetScore": 8,
+      "confidence": "high",
+      "platform": "MyLanguageExchange",
+      "handleOrName": "Lucía",
+      "quickContext": "29-year-old teacher, already living in an English-speaking country (Ireland), planning another move to NZ. High-stakes real-world English user. Fellow teacher — immediate common ground with Will.",
+      "postTopic": "Spanish teacher living in Ireland, moving to New Zealand — wants native English practice",
+      "personaMatch": [],
+      "personalizationHook": "Fellow teacher, already living in English — the 'I live here but still want to improve' angle is the Anxiety Gap in action. New Zealand move adds real urgency.",
+      "spamRiskNotes": "",
+      "drafts": {
+        "dm": {
+          "screenshot_index": 7,
+          "channel": "MyLanguageExchange",
+          "message": "Hey Lucía — fellow teacher living in Ireland, heading to New Zealand next? That's a proper adventure. I'd love to chat — I've taught across 8 countries and I work a lot with teachers who want their English to feel more natural, not just correct.",
+          "personalization_hook_used": "Fellow teacher, Ireland → New Zealand move",
+          "first_touch_rule_check": "pass",
+          "spam_risk_check": "pass",
+          "if_revise_why": ""
+        },
+        "comment": null,
+        "followups": [
+          {
+            "screenshot_index": 7,
+            "stage": "positive_reply",
+            "message": "Since you're preparing for NZ — if you ever want extra practice on your own time, I built something for that. It's called Unmute. No sales pitch, just thought it might be useful given the move.",
+            "when_to_send": "After first positive reply and at least one conversation",
+            "condition": "Only after she's engaged genuinely — given the NZ move timeline, there's natural urgency but don't force it."
+          }
+        ]
+      },
+      "status": "pending"
+    },
+    {
+      "id": "ac0d7984-e83e-4aa8-8bb1-3e9b3ff759ce",
+      "targetId": "mylanguageexchange:samantha",
+      "createdAt": "2026-02-24T07:59:53.815Z",
+      "source": "manual_import",
+      "actionType": "DM",
+      "targetScore": 7,
+      "confidence": "medium",
+      "platform": "MyLanguageExchange",
+      "handleOrName": "Samantha",
+      "quickContext": "Young woman from Tunja, Colombia. Wants to improve English — not 'practice', 'improve' — slight gap language. Not gold member but explicitly invites messages.",
+      "postTopic": "Wants to improve English skills, offers Spanish and French help",
+      "personaMatch": [],
+      "personalizationHook": "From Tunja specifically (not Bogotá) — shows she's not in a major hub, which often correlates with fewer native English exposure opportunities",
+      "spamRiskNotes": "",
+      "drafts": {
+        "dm": {
+          "screenshot_index": 6,
+          "channel": "MyLanguageExchange",
+          "message": "Hey Samantha — Tunja! I've worked with students from all over Colombia and Tunja doesn't come up that often. I'm an English teacher — happy to practice with you, no catch. DM me whenever.",
+          "personalization_hook_used": "Tunja specificity — not Bogotá",
+          "first_touch_rule_check": "pass",
+          "spam_risk_check": "pass",
+          "if_revise_why": ""
+        },
+        "comment": null,
+        "followups": [
+          {
+            "screenshot_index": 6,
+            "stage": "positive_reply",
+            "message": "If you want to practice on your own too — I built an app for English speakers who want to get more comfortable speaking. It's called Unmute. DM me if you want to try it.",
+            "when_to_send": "After positive reply and initial conversation",
+            "condition": "Only post-rapport."
+          }
+        ]
+      },
+      "status": "pending"
+    },
+    {
+      "id": "17ce1635-4676-4b72-8afd-51db1e1b1d8a",
+      "targetId": "mylanguageexchange:manuel-c-cera",
+      "createdAt": "2026-02-24T07:59:53.815Z",
+      "source": "manual_import",
+      "actionType": "DM",
+      "targetScore": 6,
+      "confidence": "medium",
+      "platform": "MyLanguageExchange",
+      "handleOrName": "Manuel Cócera",
+      "quickContext": "55-year-old Spaniard, married, two kids, juggles French/English/German — suggests social media as contact channel, not gold member",
+      "postTopic": "Practicing three languages simultaneously; offers Spanish help in return",
+      "personaMatch": [],
+      "personalizationHook": "Juggling French, English, AND German at once — lead with curiosity about which one is giving him the most trouble",
+      "spamRiskNotes": "",
+      "drafts": {
+        "dm": {
+          "screenshot_index": 2,
+          "channel": "MyLanguageExchange",
+          "message": "Hey Manuel — French, English, AND German at the same time? Respect. Which one's giving you the most grief right now? I'm a teacher and I work with a lot of people juggling multiple languages — happy to practice English with you.",
+          "personalization_hook_used": "Juggling three languages simultaneously",
+          "first_touch_rule_check": "pass",
+          "spam_risk_check": "pass",
+          "if_revise_why": ""
+        },
+        "comment": null,
+        "followups": []
+      },
+      "status": "pending"
+    },
+    {
+      "id": "aa13ccca-20fe-4cc7-8832-b04f4bbbe674",
+      "targetId": "mylanguageexchange:armando",
+      "createdAt": "2026-02-24T07:59:53.815Z",
+      "source": "manual_import",
+      "actionType": "DM",
+      "targetScore": 5,
+      "confidence": "medium",
+      "platform": "MyLanguageExchange",
+      "handleOrName": "Armando",
+      "quickContext": "Cuban expat in Buenos Aires, considers English the most important language, warm and open personality, active today",
+      "postTopic": "Language exchange, values friendship and cultural knowledge",
+      "personaMatch": [],
+      "personalizationHook": "Cuba to Argentina journey — lead with the cultural curiosity angle, not the English practice angle",
+      "spamRiskNotes": "",
+      "drafts": {
+        "dm": {
+          "screenshot_index": 1,
+          "channel": "MyLanguageExchange",
+          "message": "Hey Armando — Cuba to Argentina is quite a journey. I'd love to swap stories over a conversation in English sometime. I'm a teacher with 12 years across Latin America and beyond, happy to chat. DM me if you're up for it.",
+          "personalization_hook_used": "Cuba to Argentina migration story",
+          "first_touch_rule_check": "pass",
+          "spam_risk_check": "pass",
+          "if_revise_why": ""
+        },
+        "comment": null,
+        "followups": []
+      },
+      "status": "pending"
+    },
+    {
+      "id": "26c611e6-e39a-4685-a3c5-13fada6ed139",
+      "targetId": "mylanguageexchange:aitor",
+      "createdAt": "2026-02-24T07:59:53.815Z",
+      "source": "manual_import",
+      "actionType": "DM",
+      "targetScore": 5,
+      "confidence": "medium",
+      "platform": "MyLanguageExchange",
+      "handleOrName": "Aitor",
+      "quickContext": "Sociable, active guy — reading, hiking, paddle surfing, jazz. Looking for conversation partners but no specific English struggle mentioned.",
+      "postTopic": "Active lifestyle, broad interests — looking for interesting conversations",
+      "personaMatch": [],
+      "personalizationHook": "Paddle surfing is unusual — lead with that, keep it light and casual",
+      "spamRiskNotes": "",
+      "drafts": {
+        "dm": {
+          "screenshot_index": 5,
+          "channel": "MyLanguageExchange",
+          "message": "Hey Aitor — paddle surfing and jazz is an interesting combo. I'm a teacher who's always looking for good conversation partners. Happy to chat in English if you want — no agenda, just a decent conversation.",
+          "personalization_hook_used": "Paddle surfing + jazz interests",
+          "first_touch_rule_check": "pass",
+          "spam_risk_check": "pass",
+          "if_revise_why": ""
+        },
+        "comment": null,
+        "followups": []
+      },
+      "status": "pending"
+    },
+    {
+      "id": "2c3f6cc8-cb6b-4165-bddf-3d8261c8237e",
+      "targetId": "mylanguageexchange:eunju",
+      "createdAt": "2026-02-24T04:49:46.369Z",
+      "source": "manual_import",
+      "actionType": "DM",
+      "targetScore": 1,
+      "confidence": "medium",
+      "platform": "MyLanguageExchange",
+      "handleOrName": "eunju",
+      "quickContext": "Language exchange profile — multilingual background, translation experience, working in Japan",
+      "postTopic": "Language exchange profile — multilingual background, translation experience, working in Japan",
+      "personaMatch": [],
+      "personalizationHook": "5+ years translation experience means they KNOW language deeply — classic case of knowing words but freezing in live conversation. Strong hook.",
+      "spamRiskNotes": "",
+      "drafts": {
+        "dm": {
+          "screenshot_index": 1,
+          "channel": "MyLanguageExchange",
+          "message": "Hey Eunju — your background is genuinely impressive. Five years of translation work means you understand language at a level most people never reach. I'm a TESOL teacher with 12 years across a lot of nationalities, and I've noticed translators sometimes have the hardest time in live conversation — the brain's working overtime switching between systems. Happy to do a casual exchange session if you'd find that useful. No catch.",
+          "personalization_hook_used": "5+ years translation experience — cognitive load angle",
+          "spam_risk_check": "pass",
+          "if_revise_why": ""
+        },
+        "comment": null,
+        "followups": [
+          {
+            "screenshot_index": 1,
+            "stage": "no_reply_72h",
+            "message": "No worries if the timing's off — the offer stands whenever.",
+            "when_to_send": "72 hours after first DM with no reply",
+            "condition": "Send once only. Do not follow up again after this."
+          },
+          {
+            "screenshot_index": 1,
+            "stage": "post_class_offer",
+            "message": "That was a good session. I actually built an app for exactly what we were working on — practicing the moment before you speak, not just the grammar. It's called Unmute. Happy to share the link if you want to try it between our sessions.",
+            "when_to_send": "After first successful exchange session",
+            "condition": "Only after real value has been given. Never in first contact."
+          }
+        ]
+      },
+      "status": "pending"
+    },
+    {
+      "id": "c2d5f670-bbe0-4907-bc73-6cffd1ff348d",
+      "targetId": "mylanguageexchange:mai",
+      "createdAt": "2026-02-24T04:49:46.369Z",
+      "source": "manual_import",
+      "actionType": "DM",
+      "targetScore": 1,
+      "confidence": "high",
+      "platform": "MyLanguageExchange",
+      "handleOrName": "Mai",
+      "quickContext": "Language exchange profile — moved from Ireland to NYC, creative hobbies (painting, ikebana, birding)",
+      "postTopic": "Language exchange profile — moved from Ireland to NYC, creative hobbies (painting, ikebana, birding)",
+      "personaMatch": [],
+      "personalizationHook": "Hiroshima to Tokyo to Ireland to NYC is a remarkable journey. The Ireland-to-NYC English shift (accent, idioms) is a real and specific pain point worth acknowledging.",
+      "spamRiskNotes": "",
+      "drafts": {
+        "dm": {
+          "screenshot_index": 3,
+          "channel": "MyLanguageExchange",
+          "message": "Hey Mai — Hiroshima to Tokyo to Ireland to NYC is genuinely one of the more interesting paths I've come across. I'm curious — how did the switch from Irish English to American English land for you? That shift catches a lot of people off guard. I'm a teacher, been doing this 12 years across a lot of cultures. Happy to do an exchange if you want to practice — your ikebana teaching instincts probably make you a great language partner too.",
+          "personalization_hook_used": "Ireland to NYC English shift, ikebana teaching mention",
+          "spam_risk_check": "pass",
+          "if_revise_why": ""
+        },
+        "comment": null,
+        "followups": [
+          {
+            "screenshot_index": 3,
+            "stage": "no_reply_72h",
+            "message": "No worries — NYC timing is its own thing. Offer stands.",
+            "when_to_send": "72 hours after first DM with no reply",
+            "condition": "Send once only."
+          }
+        ]
+      },
+      "status": "pending"
+    },
+    {
+      "id": "27a81694-7c4f-44b9-8f8e-69f413c109fc",
+      "targetId": "mylanguageexchange:denis",
+      "createdAt": "2026-02-24T04:49:46.369Z",
+      "source": "manual_import",
+      "actionType": "DM",
+      "targetScore": 1,
+      "confidence": "medium",
+      "platform": "MyLanguageExchange",
+      "handleOrName": "Denis",
+      "quickContext": "Language exchange profile — interested in literature, jazz, bossa nova, multiculturalism, welcomes Ukrainians",
+      "postTopic": "Language exchange profile — interested in literature, jazz, bossa nova, multiculturalism, welcomes Ukrainians",
+      "personaMatch": [],
+      "personalizationHook": "Jazz + bossa + literature + multiculturalism — someone who would appreciate the anti-Duolingo angle without being told it directly. IB from France is Will's actual connection here.",
+      "spamRiskNotes": "",
+      "drafts": {
+        "dm": {
+          "screenshot_index": 4,
+          "channel": "MyLanguageExchange",
+          "message": "Salut Denis — j'ai grandi en France et j'ai mon IB de là-bas, alors ton profil m'a parlé directement. La bossa, le jazz, la littérature — c'est exactement le genre de conversation qui fait vraiment progresser en langue. Je suis prof d'anglais depuis 12 ans, et je cherche aussi à garder mon français vivant. On pourrait faire un échange sérieux si ça t'intéresse — pas de formalités, juste une vraie conversation.",
+          "personalization_hook_used": "Shared IB France background, jazz/literature interests, bilingual approach",
+          "spam_risk_check": "pass",
+          "if_revise_why": ""
+        },
+        "comment": null,
+        "followups": [
+          {
+            "screenshot_index": 4,
+            "stage": "no_reply_72h",
+            "message": "Pas de souci — l'offre tient si ça te convient mieux plus tard.",
+            "when_to_send": "72 hours after first DM with no reply",
+            "condition": "Send once only."
+          }
+        ]
+      },
+      "status": "pending"
+    },
+    {
+      "id": "c2c48917-5a4e-4bf4-8eba-0977e6702955",
+      "targetId": "mylanguageexchange:alexandra",
+      "createdAt": "2026-02-24T04:49:46.369Z",
+      "source": "manual_import",
+      "actionType": "DM",
+      "targetScore": 1,
+      "confidence": "high",
+      "platform": "MyLanguageExchange",
+      "handleOrName": "Alexandra",
+      "quickContext": "Language exchange profile — wants to improve English fluency, offers Spanish exchange",
+      "postTopic": "Language exchange profile — wants to improve English fluency, offers Spanish exchange",
+      "personaMatch": [],
+      "personalizationHook": "She says 'just want to improve my fluency' — that's the Anxiety Gap in plain language. Very direct hook available.",
+      "spamRiskNotes": "",
+      "drafts": {
+        "dm": {
+          "screenshot_index": 5,
+          "channel": "MyLanguageExchange",
+          "message": "Hey Alexandra — you said it yourself: you want to improve your fluency, not just learn more words. That's actually the harder problem, and it's the one most apps and even some teachers don't address well. I've been teaching for 12 years across a lot of nationalities and I work a lot with people who know plenty of English but freeze when it's time to actually use it. Happy to do a session — I can help with your English, you can help me stay sharp in Spanish. DM me if you want.",
+          "personalization_hook_used": "Her own words 'improve my fluency' — Anxiety Gap without naming it, Spanish exchange offer",
+          "spam_risk_check": "pass",
+          "if_revise_why": ""
+        },
+        "comment": null,
+        "followups": [
+          {
+            "screenshot_index": 5,
+            "stage": "no_reply_72h",
+            "message": "No worries — whenever the timing's right.",
+            "when_to_send": "72 hours after first DM with no reply",
+            "condition": "Send once only."
+          },
+          {
+            "screenshot_index": 5,
+            "stage": "post_class_offer",
+            "message": "Glad that helped. The freeze moment you mentioned — I built something specifically for that. It's called Unmute. First 100 users get lifetime access for $97, then it's a subscription. Want the link?",
+            "when_to_send": "After first exchange session where she mentions freezing or fluency anxiety",
+            "condition": "Only if she raises the anxiety/freeze topic herself during session."
+          }
+        ]
+      },
+      "status": "pending"
+    },
+    {
+      "id": "0a52fdcf-5225-48c5-8c14-feed13076dff",
+      "targetId": "mylanguageexchange:javier",
+      "createdAt": "2026-02-24T07:59:53.815Z",
+      "source": "manual_import",
+      "actionType": "SKIP",
+      "targetScore": 4,
+      "confidence": "low",
+      "platform": "MyLanguageExchange",
+      "handleOrName": "javier",
+      "quickContext": "Brief profile, no photo, economist, claims advanced level. Minimal effort profile.",
+      "postTopic": "Economist wanting to practice advanced English",
+      "personaMatch": [],
+      "personalizationHook": "Economist with advanced English — likely not a high-friction learner. Skip for now.",
+      "spamRiskNotes": "",
+      "drafts": {
+        "dm": null,
+        "comment": null,
+        "followups": []
+      },
+      "status": "pending"
+    }
+  ]
+}

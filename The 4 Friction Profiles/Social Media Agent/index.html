@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daily Operator Copilot</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Unmute Outreach Operator</p>
+        <h1>Outreach Operator Copilot</h1>
+        <p class="subtitle">Human-in-the-loop outreach workflow for research, DMs, follow-ups, and logging. Drafts are generated/copied manually to avoid bot-like behavior.</p>
+      </div>
+      <div class="hero-actions">
+        <label>
+          <span>Date</span>
+          <input id="datePicker" type="date">
+        </label>
+        <label class="social-content-only">
+          <span>Content Comment Mode</span>
+          <select id="commentMode">
+            <option value="AUTO">Auto (from sprint calendar)</option>
+            <option value="SPRINT">Sprint</option>
+            <option value="MAINTENANCE">Maintenance</option>
+          </select>
+        </label>
+        <label class="checkbox-inline">
+          <input id="contentToolsToggle" type="checkbox">
+          <span>Advanced > Content</span>
+        </label>
+        <label class="checkbox-inline">
+          <input id="simpleModeToggle" type="checkbox" checked>
+          <span>Simple Mode</span>
+        </label>
+        <button id="resetDayBtn" class="ghost">Reset This Day</button>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="panel span-2" id="dailyFlowPanel">
+        <div class="panel-head">
+          <h2>Daily Flow</h2>
+          <p>Use this in order: capture → import → send.</p>
+        </div>
+        <div id="dailyFlowSteps" class="flow-steps"></div>
+        <div id="mleSequencer" class="stack"></div>
+        <div id="tiktokSequencer" class="stack"></div>
+      </section>
+
+      <section class="panel span-2" id="replyIntelPanel">
+        <div class="panel-head">
+          <h2>Reply Intelligence</h2>
+          <p>Analyze one reply and draft the next message only. Separate from comment/content workflows.</p>
+        </div>
+        <div class="reply-intel-layout">
+          <div class="reply-intel-column">
+            <div class="reply-intel-grid">
+              <label class="field mini">
+                <span>Platform</span>
+                <select id="replyIntelPlatform">
+                  <option>MyLanguageExchange</option>
+                  <option>TikTok</option>
+                  <option>Facebook</option>
+                  <option>LinkedIn</option>
+                  <option>Instagram</option>
+                  <option>Other</option>
+                </select>
+              </label>
+              <label class="field mini">
+                <span>Time Elapsed</span>
+                <select id="replyIntelTimeElapsed">
+                  <option value="0">Same day</option>
+                  <option value="1">1-2 days</option>
+                  <option value="3">3-4 days</option>
+                  <option value="5">5+ days</option>
+                </select>
+              </label>
+              <label class="field mini">
+                <span>Previous Attempts</span>
+                <input id="replyIntelPrevAttempts" type="number" min="0" max="5" value="1">
+              </label>
+              <label class="field mini">
+                <span>Objective</span>
+                <select id="replyIntelObjective">
+                  <option value="tester">tester</option>
+                  <option value="paid">paid</option>
+                  <option value="call">call</option>
+                </select>
+              </label>
+            </div>
+            <label class="field">
+              <span>Original Message</span>
+              <textarea id="replyIntelOriginalMessage" rows="4" placeholder="Paste the message you sent."></textarea>
+            </label>
+            <label class="field">
+              <span>Their Reply (leave blank if no reply yet)</span>
+              <textarea id="replyIntelTheirReply" rows="4" placeholder="Paste their reply exactly."></textarea>
+            </label>
+            <div class="button-row">
+              <button id="analyzeReplyIntelBtn" type="button">Analyze Reply</button>
+              <span id="replyIntelStatus" class="muted-line">Local heuristic mode (no API cost). Human-in-the-loop only.</span>
+            </div>
+          </div>
+
+          <div class="reply-intel-column">
+            <div id="replyIntelOutput" class="reply-intel-output">
+              <p class="muted-line">No reply analysis yet. Fill the fields and click <strong>Analyze Reply</strong>.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="todayPanel">
+        <div class="panel-head">
+          <h2>Today</h2>
+          <p id="todaySummary"></p>
+        </div>
+        <div class="today-cards" id="todayCards"></div>
+      </section>
+
+      <section class="panel" id="timerPanel">
+        <div class="panel-head">
+          <h2>Focus Timer</h2>
+          <p>Load a task duration, start, and move on when time is up.</p>
+        </div>
+        <div class="timer-box">
+          <div class="timer-display" id="timerDisplay">00:00</div>
+          <div class="timer-meta" id="timerLabel">No task loaded</div>
+          <div class="timer-controls">
+            <select id="timerTaskSelect"></select>
+            <button id="loadTimerBtn">Load</button>
+            <button id="startPauseTimerBtn">Start</button>
+            <button id="resetTimerBtn" class="ghost">Reset</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel span-2" id="timelinePanel">
+        <div class="panel-head">
+          <h2>Daily Timeline</h2>
+          <p>Check boxes are saved per day.</p>
+        </div>
+        <div id="timeline"></div>
+      </section>
+
+      <section class="panel span-2" id="draftPanel">
+        <div class="panel-head">
+          <h2>Outreach Drafts</h2>
+          <p>Use this as a prep station. Claude writes; you review and paste manually.</p>
+        </div>
+        <p class="muted-line simple-mode-only-hint">Simple Mode hides social/content draft boxes so outreach stays clean. Turn off Simple Mode when you switch to content production.</p>
+        <div class="draft-layout">
+          <div class="draft-column">
+            <label class="field">
+              <span>Context Notes (targets, posts, stories, what they posted)</span>
+              <textarea id="contextNotes" rows="5" placeholder="Paste notes from your 7:00 research block. One line per person/post helps."></textarea>
+            </label>
+            <label class="field">
+              <span>5 Outreach DMs (LinkedIn/Facebook)</span>
+              <textarea id="outreachDrafts" rows="8" placeholder="Paste or draft 5 personalized messages here."></textarea>
+            </label>
+            <label class="field">
+              <span>Will Comment Replies (Facebook / LinkedIn)</span>
+              <textarea id="willCommentDrafts" rows="6" placeholder="Helpful value-first comment replies (2-3 sentences, no pitch). Use before DMing."></textarea>
+            </label>
+            <label class="field">
+              <span>5–8 MyLanguageExchange Messages</span>
+              <textarea id="mleDrafts" rows="7" placeholder="Variations only. Keep them human and specific."></textarea>
+            </label>
+            <label class="field">
+              <span>Conversion / Follow-up Drafts</span>
+              <textarea id="conversionDrafts" rows="6" placeholder="Post-class follow-ups, WhatsApp moves, Founder’s Pass pitch variants."></textarea>
+            </label>
+          </div>
+
+          <div class="draft-column">
+            <label class="field social-content-only">
+              <span>Mr Blue Comments (end every comment with 🔵🔵🔵)</span>
+              <textarea id="mrBlueDrafts" rows="8" placeholder="Wholesome confusion about English."></textarea>
+            </label>
+            <label class="field social-content-only">
+              <span>Guided Nap Comments (deadpan sincerity, no emoji)</span>
+              <textarea id="guidedNapDrafts" rows="8" placeholder="Absurdist wisdom that collapses."></textarea>
+            </label>
+            <label class="field social-content-only">
+              <span>TikTok / YouTube Captions + Descriptions</span>
+              <textarea id="captionDrafts" rows="8" placeholder="One set per post. Include platform-specific tweaks if needed."></textarea>
+            </label>
+            <label class="field">
+              <span>Safety / Spam Notes</span>
+              <textarea id="safetyNotes" rows="5" placeholder="Examples: personalized from real post, no duplicate sends, no follow-up spam, AIGC label needed on TikTok."></textarea>
+            </label>
+          </div>
+        </div>
+        <div class="stack">
+          <h3 class="subhead">MLE DM QA (Reply-First Check)</h3>
+          <div id="mleQaList"></div>
+        </div>
+        <div class="stack">
+          <h3 class="subhead">Comment → DM Handoff (Facebook / LinkedIn)</h3>
+          <div id="willCommentHandoffList"></div>
+        </div>
+      </section>
+
+      <section class="panel span-2 advanced-only" id="brandPackPanel">
+        <div class="panel-head">
+          <h2>Brand Pack</h2>
+          <p>Paste your brand/persona JSON once. The app will use it when generating Claude prompts.</p>
+        </div>
+        <div class="stack">
+          <div class="button-row">
+            <button id="validateBrandPackBtn" type="button">Validate Brand Pack</button>
+            <button id="useProvidedBrandPackBtn" class="ghost" type="button">Load Provided JSON (from this build)</button>
+            <span id="brandPackStatus" class="status-pill">No brand pack loaded</span>
+          </div>
+          <textarea id="brandPackJson" rows="12" placeholder="Paste your brand voice / personas / guardrails JSON here."></textarea>
+        </div>
+      </section>
+
+      <section class="panel span-2 advanced-only" id="contextHubPanel">
+        <div class="panel-head">
+          <h2>Context Hub (Shared)</h2>
+          <p>Optional shared source of truth for Outreach and future Distribution Agent.</p>
+        </div>
+        <div class="stack">
+          <label class="field">
+            <span>Context Hub Path</span>
+            <input id="contextHubPathInput" type="text" placeholder="/Users/.../context-hub 2">
+          </label>
+          <div class="button-row">
+            <button id="saveContextHubPathBtn" type="button" class="ghost">Save Path</button>
+            <button id="refreshContextHubBtn" type="button">Refresh Hub Summary</button>
+            <span id="contextHubStatusLine" class="muted-line">Context Hub is optional for Outreach V1, but recommended for multi-agent setup.</span>
+          </div>
+          <div id="contextHubSummary"></div>
+        </div>
+      </section>
+
+      <section class="panel span-2" id="screenshotPanel">
+        <div class="panel-head">
+          <h2>Prospect Capture</h2>
+          <p>Default flow: generate a Claude Desktop handoff, attach screenshots in Claude, then paste JSON back here to import drafts.</p>
+        </div>
+        <div class="stack">
+          <div class="button-row">
+            <label class="file-btn">
+              <input id="screenshotInput" type="file" accept="image/*" multiple>
+              Add Screenshots
+            </label>
+            <button id="clearScreenshotsBtn" class="ghost" type="button">Clear Screenshots</button>
+            <button id="generateScreenshotPromptBtn" type="button">Generate Screenshot Prompt</button>
+            <button id="copyScreenshotPromptBtn" class="ghost" type="button">Copy Prompt</button>
+            <button id="copyScreenshotBundleBtn" class="ghost" type="button">Copy Prompt + Steps</button>
+              <button id="downloadScreenshotHandoffBtn" class="ghost advanced-only" type="button">Download Handoff JSON</button>
+              <button id="analyzeScreenshotsBtn" type="button">Analyze with Claude (API)</button>
+          </div>
+          <div id="screenshotPasteZone" class="paste-zone" tabindex="0" role="button" aria-label="Paste or drop screenshots here">
+            <strong>Fast add: Paste screenshot here</strong>
+            <span>Click this box, then press <code>Cmd+V</code> (or drag/drop image files). Great for macOS screenshots.</span>
+          </div>
+          <div class="link-intake advanced-only">
+            <label class="field">
+              <span>Link Intake (public pages only)</span>
+              <input id="linkInput" type="url" placeholder="Paste a public TikTok/YouTube/Reddit/etc. link (MLE may require screenshots)">
+            </label>
+            <div class="button-row">
+              <button id="fetchLinkContextBtn" type="button">Fetch Link Context</button>
+              <button id="generateLinkPromptBtn" class="ghost" type="button">Generate Link Prompt</button>
+              <button id="copyLinkPromptBtn" class="ghost" type="button">Copy Link Prompt</button>
+              <span id="linkStatusLine" class="muted-line">Use this for public links. For login-only pages (like MLE), use screenshots.</span>
+            </div>
+            <div id="linkContextPreview"></div>
+          </div>
+          <label class="field advanced-only">
+            <span>Facebook / LinkedIn Post Text Intake (optional)</span>
+            <textarea id="socialPostTextInput" rows="6" placeholder="Paste post text here when you don't want to screenshot. The app will ask Claude to extract: poster, what they said, struggle, helpful comment reply, prospect score, and follow-up DM (only after they engage)."></textarea>
+          </label>
+          <p id="claudeHandoffStatusLine" class="muted-line">Recommended: Generate prompt → copy into Claude Desktop → attach the same screenshots → paste Claude JSON back below.</p>
+          <div class="api-controls advanced-only">
+            <label class="field">
+              <span>Provider</span>
+              <select id="apiProviderSelect">
+                <option value="gemini">Gemini (cheaper default)</option>
+                <option value="claude">Claude</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Model (optional)</span>
+              <input id="apiModelInput" type="text" placeholder="Leave blank for default">
+            </label>
+            <label class="field mini">
+              <span>Max screenshots / request</span>
+              <input id="maxScreenshotsInput" type="number" min="1" max="20" value="8">
+            </label>
+            <label class="field mini">
+              <span>Daily API cap</span>
+              <input id="dailyApiCapInput" type="number" min="1" max="100" value="12">
+            </label>
+            <label class="checkbox-inline">
+              <input id="autoImportAnalyzeCheckbox" type="checkbox" checked>
+              <span>Auto-import results</span>
+            </label>
+          </div>
+          <p id="apiStatusLine" class="muted-line advanced-only">API mode is local-only. Run this app with <code>node server.js</code> to enable screenshot reading.</p>
+          <div id="screenshotGallery" class="screenshot-gallery">
+            <p class="muted-line">No screenshots added yet.</p>
+          </div>
+            <label class="field advanced-only">
+              <span>Claude Vision Prompt (copy this into Claude, then attach the same screenshots there)</span>
+              <textarea id="screenshotPromptOutput" rows="10" readonly></textarea>
+            </label>
+          <label class="field">
+            <span>Claude Screenshot Output (paste JSON: actions, scores, comments/DMs, follow-ups)</span>
+            <textarea id="screenshotClaudeOutput" rows="10" placeholder="Paste Claude's screenshot analysis here. JSON preferred."></textarea>
+          </label>
+          <div>
+            <h3 class="subhead">Screenshot Decisions Preview</h3>
+            <div id="screenshotDecisionsPreview"></div>
+          </div>
+          <div class="button-row">
+            <button id="repairScreenshotJsonBtn" class="ghost" type="button">Repair JSON</button>
+            <button id="importScreenshotOutputBtn" type="button">Import to Context + DMs</button>
+            <span class="muted-line">Expected JSON keys: <code>target_notes</code> (with <code>action_type</code> + <code>target_score</code>), plus <code>comment_drafts</code>/<code>outreach_dms</code>/<code>followups</code></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel span-2" id="leadRadarPanel">
+        <div class="panel-head">
+          <h2>Lead Radar (Import)</h2>
+          <p>Paste Lead Radar JSON here later to review public high-intent leads and send selected items into outreach notes.</p>
+        </div>
+        <div class="stack">
+          <label class="field">
+            <span>Lead Radar JSON (paste output from Lead Radar tool)</span>
+            <textarea id="leadRadarRawInput" rows="7" placeholder='Paste JSON with a top-level \"leads\" array.'></textarea>
+          </label>
+          <div class="button-row">
+            <button id="loadLeadRadarBtn" type="button">Load Radar Leads</button>
+            <button id="clearLeadRadarBtn" type="button" class="ghost">Clear Radar</button>
+            <span id="leadRadarStatusLine" class="muted-line">No radar leads loaded yet.</span>
+          </div>
+          <div id="leadRadarList"></div>
+        </div>
+      </section>
+
+      <section class="panel span-2" id="tiktokTrackerPanel">
+        <div class="panel-head">
+          <h2>TikTok DM Tracker</h2>
+          <p>Track who you messaged, what they said, and whether they converted. Simple mini-CRM for TikTok outreach.</p>
+        </div>
+        <div class="stack">
+          <div class="tracker-form-grid">
+            <label class="field mini">
+              <span>Handle</span>
+              <input id="ttHandle" type="text" placeholder="@username">
+            </label>
+            <label class="field mini">
+              <span>Status</span>
+              <select id="ttStatus">
+                <option value="sent">sent</option>
+                <option value="replied">replied</option>
+                <option value="tester">tester</option>
+                <option value="whatsapp">whatsapp</option>
+                <option value="converted">converted</option>
+                <option value="no_reply">no_reply</option>
+                <option value="skip">skip</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Video URL</span>
+              <input id="ttVideoUrl" type="url" placeholder="https://www.tiktok.com/...">
+            </label>
+            <label class="field">
+              <span>Screenshot Ref</span>
+              <div class="input-with-btn">
+                <input id="ttScreenshotRef" type="text" placeholder="Screenshot filename or short note">
+                <button id="ttUseLatestScreenshotBtn" type="button" class="ghost">Use latest screenshot</button>
+              </div>
+            </label>
+          </div>
+
+          <div class="tracker-form-grid tracker-form-grid-3">
+            <label class="field mini">
+              <span>Objective</span>
+              <select id="ttObjective">
+                <option value="tester">tester</option>
+                <option value="paid">paid</option>
+                <option value="call">call</option>
+              </select>
+            </label>
+            <label class="field mini">
+              <span>Hook Type</span>
+              <select id="ttHookType">
+                <option value="">-</option>
+                <option value="question">question</option>
+                <option value="empathy">empathy</option>
+                <option value="humor">humor</option>
+                <option value="authority">authority</option>
+                <option value="vulnerability">vulnerability</option>
+                <option value="direct_offer">direct_offer</option>
+                <option value="comment_reference">comment_reference</option>
+              </select>
+            </label>
+            <label class="field mini">
+              <span>Tone Style</span>
+              <select id="ttToneStyle">
+                <option value="">-</option>
+                <option value="casual_direct">casual_direct</option>
+                <option value="warm_supportive">warm_supportive</option>
+                <option value="playful">playful</option>
+                <option value="authority_light">authority_light</option>
+                <option value="low_pressure">low_pressure</option>
+              </select>
+            </label>
+            <label class="field mini">
+              <span>CTA Strength</span>
+              <select id="ttCtaStrength">
+                <option value="">-</option>
+                <option value="low">low</option>
+                <option value="medium">medium</option>
+                <option value="high">high</option>
+              </select>
+            </label>
+            <label class="field mini">
+              <span>Persona Cluster</span>
+              <input id="ttPersonaCluster" type="text" placeholder="e.g. ES anxious beginner">
+            </label>
+            <label class="field mini">
+              <span>Reply Latency (days)</span>
+              <input id="ttReplyLatencyDays" type="number" min="0" max="30" step="1" placeholder="0">
+            </label>
+          </div>
+
+          <label class="field">
+            <span>First DM Sent</span>
+            <textarea id="ttFirstDm" rows="3" placeholder="Paste the DM you sent."></textarea>
+          </label>
+          <label class="field">
+            <span>Their Reply</span>
+            <textarea id="ttReply" rows="3" placeholder="Paste their reply (if any)."></textarea>
+          </label>
+          <label class="field">
+            <span>Notes</span>
+            <textarea id="ttNotes" rows="2" placeholder="Tester quality, vibe, conversion notes, next step."></textarea>
+          </label>
+
+          <div class="button-row">
+            <button id="ttSaveEntryBtn" type="button">Add TikTok Record</button>
+            <button id="ttClearFormBtn" type="button" class="ghost">Clear Form</button>
+            <button id="ttExportCsvBtn" type="button" class="ghost">Export CSV</button>
+            <span id="ttTrackerStatusLine" class="muted-line">No TikTok records yet.</span>
+          </div>
+
+          <div id="ttTrackerSummary"></div>
+          <div id="ttTrackerList"></div>
+        </div>
+      </section>
+
+      <section class="panel advanced-only" id="claudePanel">
+        <div class="panel-head">
+          <h2>Claude Pack</h2>
+          <p>Generate a structured brief for Claude as writing copilot only.</p>
+        </div>
+        <div class="stack">
+          <button id="generateClaudePackBtn">Generate Claude Prompt + JSON</button>
+          <textarea id="claudePackOutput" rows="18" readonly></textarea>
+        </div>
+      </section>
+
+      <section class="panel span-2" id="nextBestActionsPanel">
+        <div class="panel-head">
+          <h2>Outreach Queue</h2>
+          <p>Queued from screenshot analysis imports (V1.1 backend). Highest-value actions first.</p>
+        </div>
+        <div class="button-row">
+          <button id="refreshActionsBtn" type="button">Refresh Actions</button>
+          <button id="refreshRemindersBtn" class="ghost" type="button">Refresh Reminders</button>
+          <span id="actionsStatusLine" class="muted-line">Run `node server.js` to enable backend queue + reminders.</span>
+        </div>
+        <div class="nba-layout">
+          <div>
+            <h3 class="subhead">Queue</h3>
+            <div id="nextBestActionsList"></div>
+          </div>
+          <div>
+            <h3 class="subhead">Pending 72h Reminders</h3>
+            <div id="pendingRemindersList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="metricsPanel">
+        <div class="panel-head">
+          <h2>Outreach Log</h2>
+          <p>Track outcomes and channel quality. Keep this lightweight.</p>
+        </div>
+        <div id="quickLogRow" class="quick-log-row">
+          <button type="button" class="ghost" data-metric-key="dmsSent" data-delta="-1">DMs -1</button>
+          <button type="button" data-metric-key="dmsSent" data-delta="1">DMs +1</button>
+          <button type="button" class="ghost" data-metric-key="responses" data-delta="-1">Replies -1</button>
+          <button type="button" data-metric-key="responses" data-delta="1">Replies +1</button>
+          <button type="button" class="ghost" data-metric-key="whatsAppAdds" data-delta="-1">WhatsApp -1</button>
+          <button type="button" data-metric-key="whatsAppAdds" data-delta="1">WhatsApp +1</button>
+          <button type="button" class="ghost" data-metric-key="classesBooked" data-delta="-1">Booked -1</button>
+          <button type="button" data-metric-key="classesBooked" data-delta="1">Booked +1</button>
+        </div>
+        <div class="button-row">
+          <button id="generateDailyReviewBtn" type="button" class="ghost">Generate Daily Review</button>
+          <button id="generateWeeklyReviewBtn" type="button" class="ghost">Generate Weekly Review</button>
+          <button id="copyDailyReviewBtn" type="button" class="ghost">Copy Review</button>
+        </div>
+        <div class="metric-grid">
+          <label class="field mini"><span>DMs sent</span><input id="metricDmsSent" type="number" min="0"></label>
+          <label class="field mini"><span>Responses</span><input id="metricResponses" type="number" min="0"></label>
+          <label class="field mini"><span>WhatsApp adds</span><input id="metricWhatsAppAdds" type="number" min="0"></label>
+          <label class="field mini"><span>Classes booked</span><input id="metricClassesBooked" type="number" min="0"></label>
+          <label class="field mini social-content-only"><span>Mr Blue comments</span><input id="metricMrBlueComments" type="number" min="0"></label>
+          <label class="field mini social-content-only"><span>Guided Nap comments</span><input id="metricGuidedNapComments" type="number" min="0"></label>
+        </div>
+        <label class="field">
+          <span>Daily Notes</span>
+          <div class="button-row">
+            <button id="startVoiceNotesBtn" type="button" class="ghost">Start Voice Note</button>
+            <button id="stopVoiceNotesBtn" type="button" class="ghost">Stop</button>
+            <span id="voiceNotesStatus" class="muted-line">Voice note off</span>
+          </div>
+          <textarea id="dailyNotes" rows="4" placeholder="What worked today? Which angle got replies?"></textarea>
+        </label>
+        <label class="field">
+          <span>Review Report (auto-generated)</span>
+          <textarea id="dailyReviewOutput" rows="7" readonly placeholder="Click Generate Daily Review or Generate Weekly Review."></textarea>
+        </label>
+        <div class="analytics" id="analytics"></div>
+      </section>
+
+      <section class="panel span-2 social-content-only" id="performancePanel">
+        <div class="panel-head">
+          <h2>Content Comment Performance Tracker</h2>
+          <p>Log the accounts/posts that produce good comment visibility and replies.</p>
+        </div>
+        <form id="performanceForm" class="performance-form">
+          <label class="field"><span>Channel</span><select id="perfChannel"><option>TikTok</option><option>YouTube</option><option>Instagram</option><option>Reddit</option><option>Other</option></select></label>
+          <label class="field"><span>Character</span><select id="perfCharacter"><option>Mr Blue</option><option>Guided Nap</option><option>Outreach</option><option>Distribution</option></select></label>
+          <label class="field"><span>Account / Community</span><input id="perfAccount" type="text" placeholder="@creator or community"></label>
+          <label class="field"><span>Post Topic</span><input id="perfTopic" type="text" placeholder="silent letters / sound bath / etc"></label>
+          <label class="field mini"><span>Likes on your comment</span><input id="perfLikes" type="number" min="0" value="0"></label>
+          <label class="field mini"><span>Replies to your comment</span><input id="perfReplies" type="number" min="0" value="0"></label>
+          <label class="field"><span>Outcome</span><input id="perfOutcome" type="text" placeholder="profile visits / DM / none / follow"></label>
+          <button type="submit">Add Record</button>
+        </form>
+        <div id="performanceTableWrap"></div>
+      </section>
+
+      <section class="panel span-2">
+        <div class="panel-head">
+          <h2>Guardrails</h2>
+          <p>Built-in reminders to stay compliant and human.</p>
+        </div>
+        <ul class="guardrails">
+          <li>Human sends all DMs, comments, and posts. This app drafts and organizes only.</li>
+          <li>No duplicate bulk messages. Every outreach DM should reference a real post/comment from today’s research.</li>
+          <li>One follow-up max unless the person responds.</li>
+          <li>No “check out my page” promotion in comments. Character and value are the promotion.</li>
+          <li>TikTok AI-generated content: use native/manual posting path when AIGC labeling is required.</li>
+          <li>Respect platform boundaries and your own time boundaries (hard stops are part of the system).</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>

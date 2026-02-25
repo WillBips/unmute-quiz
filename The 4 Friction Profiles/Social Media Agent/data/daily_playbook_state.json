@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "1.1",
+  "brandPackRef": {
+    "type": "json_file",
+    "path": "data/global_brand_pack.json"
+  },
+  "selectedDate": null,
+  "days": {},
+  "nextBestActionQueueRef": {
+    "type": "json_file",
+    "path": "data/next_best_actions.json"
+  },
+  "remindersRef": {
+    "type": "json_file",
+    "path": "data/reminders.json"
+  }
+}
