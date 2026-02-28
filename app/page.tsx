@@ -738,15 +738,44 @@ export default function Page() {
 
     setIsSubmitting(true);
 
-    const [webhookResult] = await Promise.allSettled([
+    const [webhookResult, quizSignupResult] = await Promise.allSettled([
       fetch(DUMMY_WEBHOOK_URL, {
         method: "POST",
         mode: "no-cors",
         headers: { "Content-Type": "text/plain;charset=UTF-8" },
         body: JSON.stringify(payload),
       }),
+      fetch("/api/quiz-signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: emailTrimmed,
+          profile,
+          locale,
+          scores,
+          answers,
+        }),
+      }).then(async (response) => {
+        if (response.ok) return;
+
+        let errorMessage = `quiz-signup failed (${response.status})`;
+        try {
+          const data = (await response.json()) as { error?: unknown };
+          if (typeof data.error === "string" && data.error.trim().length > 0) {
+            errorMessage = data.error;
+          }
+        } catch {
+          // Keep fallback error message.
+        }
+
+        throw new Error(errorMessage);
+      }),
       new Promise((resolve) => setTimeout(resolve, 900)),
     ]);
+
+    if (quizSignupResult.status === "rejected") {
+      console.warn("[quiz-signup] non-blocking failure", quizSignupResult.reason);
+    }
 
     trackEvent("email_webhook_attempted", {
       profile,
